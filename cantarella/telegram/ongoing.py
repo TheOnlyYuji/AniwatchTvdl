@@ -140,26 +140,30 @@ async def check_and_download_ongoing(client: Client, chat_id: int):
             latest_ep = entries[-1]
             ep_url = latest_ep['url']
 
-            # Use episode number or ID for identifier to prevent re-downloads when title changes
+            # Use episode number for identifier to prevent re-downloads when title or internal ep_id changes
             ep_num = latest_ep.get('ep_number')
             ep_id = latest_ep.get('ep_id')
-            if ep_num and ep_id:
-                ep_identifier = f"{anime['id']}_{ep_num}_{ep_id}"
+
+            # Fast early exit check to avoid spamming the AniList API
+            if ep_num:
+                ep_identifier = f"{anime['id']}_ep_{ep_num}"
             else:
                 ep_identifier = f"{anime['id']}_{latest_ep.get('title', 'Unknown')}"
 
             old_ep_identifier = f"{anime['id']}_{latest_ep.get('title', 'Unknown')}"
+            legacy_ep_identifier = None
+            if ep_num and ep_id:
+                legacy_ep_identifier = f"{anime['id']}_{ep_num}_{ep_id}"
 
             is_new_processed = await db.is_processed(ep_identifier)
             is_old_processed = await db.is_processed(old_ep_identifier)
+            is_legacy_processed = legacy_ep_identifier and await db.is_processed(legacy_ep_identifier)
 
-            if is_new_processed or is_old_processed:
-                # Ensure the new identifier is also marked as processed if the old one was
-                if is_old_processed and not is_new_processed:
+            if is_new_processed or is_old_processed or is_legacy_processed:
+                # Ensure the new stable identifier is marked as processed if an old format was found
+                if not is_new_processed:
                     await db.mark_processed(ep_identifier)
                 continue
-
-            print(f"New episode found: {anime['title']} - {latest_ep.get('title', 'Unknown')}")
 
             # Clean title for better AniList searching (remove extra spaces)
             clean_search_title = re.sub(r'\s+', ' ', anime['title']).strip()
@@ -168,17 +172,6 @@ async def check_and_download_ongoing(client: Client, chat_id: int):
             te = TextEditor(clean_search_title)
             await te.load_anilist()
             data = te.adata
-
-            # 1. Strict Schedule check as requested
-            is_scheduled = anime['id'] in scheduled_ids
-
-            country_of_origin = data.get("countryOfOrigin", "")
-            is_chinese = country_of_origin == "CN"
-
-            if is_chinese and not is_scheduled:
-                print(f"⏭️ Skipping unscheduled Chinese anime (Donghua): {anime['title']}")
-                await db.mark_processed(ep_identifier)
-                continue
 
             # User requested ONLY English name for filenames and search to avoid errors
             romaji_title = data.get('title', {}).get('romaji')
@@ -237,6 +230,32 @@ async def check_and_download_ongoing(client: Client, chat_id: int):
                 if "Science Future" in anime['title'] or "Season 4" in anime['title']:
                     ani_season = "4"
 
+            # Compute the ultimate universal identifier to avoid duplicate downloads
+            # even if the site lists it twice (e.g., dub added later)
+            universal_ep_identifier = f"{anime_name}_S{ani_season}_E{ani_ep_num}"
+
+            # Second layer check: if this universal episode was downloaded through another ID, skip.
+            is_universal_processed = await db.is_processed(universal_ep_identifier)
+
+            if is_universal_processed:
+                # Mark this site-specific ID as processed too, so we don't query AniList for it again
+                await db.mark_processed(ep_identifier)
+                continue
+
+            print(f"New episode found: {anime['title']} - {latest_ep.get('title', 'Unknown')} (Universal ID: {universal_ep_identifier})")
+
+            # 1. Strict Schedule check as requested
+            is_scheduled = anime['id'] in scheduled_ids
+
+            country_of_origin = data.get("countryOfOrigin", "")
+            is_chinese = country_of_origin == "CN"
+
+            if is_chinese and not is_scheduled:
+                print(f"⏭️ Skipping unscheduled Chinese anime (Donghua): {anime['title']}")
+                await db.mark_processed(ep_identifier)
+                await db.mark_processed(universal_ep_identifier)
+                continue
+
             # Send a starting message to edit (in LOG_CHANNEL if set)
 
             log_id = int(LOG_CHANNEL) if LOG_CHANNEL else chat_id
@@ -262,10 +281,11 @@ async def check_and_download_ongoing(client: Client, chat_id: int):
                     if match:
                         quality_map[match.group(1)] = msg.id
 
-                await post_to_main_channel(client, ep_url, uploaded_msgs, quality_map)
+                await post_to_main_channel(client, ep_url, uploaded_msgs, quality_map, None, str(ani_season), str(ani_ep_num) if ani_ep_num else "1")
 
             # Mark as processed
             await db.mark_processed(ep_identifier)
+            await db.mark_processed(universal_ep_identifier)
 
         except Exception as e:
             print(f"Error processing {anime['title']}: {e}")
