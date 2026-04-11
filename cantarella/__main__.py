@@ -1,7 +1,9 @@
 #@cantarellabots
 import sys
+import os
 import asyncio
 import logging
+from aiohttp import web
 import pyrogram.utils
 from pyrogram import Client
 from pyrogram.enums import ParseMode
@@ -26,10 +28,26 @@ app = Client(
     parse_mode=ParseMode.HTML
 )
 
+async def handle(request):
+    return web.Response(text="Bot is running")
+
+async def web_server():
+    web_app = web.Application()
+    web_app.router.add_get('/', handle)
+    runner = web.AppRunner(web_app)
+    await runner.setup()
+    port = int(os.environ.get("PORT", 8080))
+    site = web.TCPSite(runner, '0.0.0.0', port)
+    await site.start()
+    print(f"Web server started on port {port}")
+
 if __name__ == "__main__":
     print("Aniwatchtv downloader Bot started")
 
     async def main():
+        # Start the web server
+        await web_server()
+
         await app.start()
 
         # Check for restart message to update
