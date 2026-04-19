@@ -10,13 +10,13 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
 SET_INTERVAL = int(os.environ.get("SET_INTERVAL", 60))  # in seconds, default 1 hour
 TARGET_CHAT_ID = os.environ.get("TARGET_CHAT_ID", "")
-MAIN_CHANNEL = os.environ.get("MAIN_CHANNEL", "") # Change as needed
-LOG_CHANNEL = os.environ.get("LOG_CHANNEL", "")
-MONGO_URL = os.environ.get("MONGO_URL", "")
+MAIN_CHANNEL = os.environ.get("MAIN_CHANNEL", "-1003868800098") # Change as needed
+LOG_CHANNEL = os.environ.get("LOG_CHANNEL", "-1003624168643")
+MONGO_URL = os.environ.get("MONGO_URL", "mongodb+srv://thebochan9_db_user:SBDyUzrO7zBiClzn@cluster0.u89zs0q.mongodb.net/?appName=Cluster0")
 MONGO_NAME = os.environ.get("MONGO_NAME", "cantarellabots")
-OWNER_ID = int(os.environ.get("OWNER_ID", ""))
-ADMIN_URL = os.environ.get("ADMIN_URL", "@V_Sbotmaker")
-BOT_USERNAME = os.environ.get("BOT_USERNAME", "")
+OWNER_ID = int(os.environ.get("OWNER_ID", "7957802698"))
+ADMIN_URL = os.environ.get("ADMIN_URL", "@X_Lost_Existence_X")
+BOT_USERNAME = os.environ.get("BOT_USERNAME", "Dante_FileStore_Bot")
 FSUB_PIC = os.environ.get("FSUB_PIC", "https://files.catbox.moe/bli70r.jpg")
 FSUB_LINK_EXPIRY = int(os.environ.get("FSUB_LINK_EXPIRY", 600))
 START_PIC =os.environ.get("START_PIC", "https://files.catbox.moe/4b8jvw.jpg")
