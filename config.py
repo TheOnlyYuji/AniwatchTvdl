@@ -23,7 +23,7 @@ START_PIC =os.environ.get("START_PIC", "https://files.catbox.moe/4b8jvw.jpg")
 
 # ─── Filename & Caption Formats ───
 FORMAT = os.environ.get("FORMAT", "[S{season}-E{episode}] {title} [{quality}] [{audio}]")
-CAPTION = os.environ.get("CAPTION", "[ @cantarellabots {FORMAT}]")
+CAPTION = os.environ.get("CAPTION", "{FORMAT}")
 
 # ─── Progress Bar Settings ───
 PROGRESS_BAR = os.environ.get("PROGRESS_BAR", """
