@@ -42,7 +42,7 @@ CAPTION_FORMAT = """
 ➥ ɢᴇɴʀᴇs : {genres}
 ➥ ᴀᴜᴅɪᴏ : {audio}</i></blockquote>
 <b>━━━━━━━━━━━━━━━━━━━━━━━━</b>
-<b><i>⌬ ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @Anine_XTR</i></b>
+<b><i>⌬ ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @Anime_XTR</i></b>
 """
 
 GENRES_EMOJI = {
