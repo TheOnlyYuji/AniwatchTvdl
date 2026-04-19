@@ -9,7 +9,7 @@ API_HASH = os.environ.get("API_HASH", "")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
 SET_INTERVAL = int(os.environ.get("SET_INTERVAL", 60))  # in seconds, default 1 hour
-TARGET_CHAT_ID = os.environ.get("TARGET_CHAT_ID", "")
+TARGET_CHAT_ID = os.environ.get("TARGET_CHAT_ID", "-1003937790415")
 MAIN_CHANNEL = os.environ.get("MAIN_CHANNEL", "-1003868800098") # Change as needed
 LOG_CHANNEL = os.environ.get("LOG_CHANNEL", "-1003624168643")
 MONGO_URL = os.environ.get("MONGO_URL", "mongodb+srv://thebochan9_db_user:SBDyUzrO7zBiClzn@cluster0.u89zs0q.mongodb.net/?appName=Cluster0")
