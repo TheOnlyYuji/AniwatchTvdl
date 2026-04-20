@@ -34,15 +34,15 @@ except ImportError:
         return {"anime_title": name}
 
 CAPTION_FORMAT = """
-<blockquote><b>◆ {title} ◆</b></blockquote>
-<b>━━━━━━━━━━━━━━━━━━━━━━━━</b>
-<blockquote><i>➥ Sᴇᴀsᴏɴ:- {anime_season}
-➥ ᴇᴘɪsᴏᴅᴇ : {ep_no}
-➥ sᴛᴀᴛᴜs : {status}
-➥ ɢᴇɴʀᴇs : {genres}
-➥ ᴀᴜᴅɪᴏ : {audio}</i></blockquote>
-<b>━━━━━━━━━━━━━━━━━━━━━━━━</b>
-<b><i>⌬ ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @Anime_XTR</i></b>
+<blockquote><b>✦ {title} ✦</b></blockquote>
+<b>━━━━━━━━━━━━━━━━━━━━━</b>
+<blockquote><i>
+➥ Episode: {ep_no}
+➥ Quality: {quality}
+➥ Audio: {audio}
+</i></blockquote>
+<b>━━━━━━━━━━━━━━━━━━━━━</b>
+<b><i>≡ ᴘᴏᴡᴇʀᴇᴅ ʙʏ: @Anime_XTR</i></b>
 """
 
 GENRES_EMOJI = {
